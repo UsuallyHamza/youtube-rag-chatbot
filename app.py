@@ -70,28 +70,6 @@ def append_bge_prefix(question):
     return f"Represent this sentence for searching relevant passages: {question}"
 
 
-"""# **Step 1a - Indexing (Document Ingestion)**"""
-
-
-
-"""# **Step 1B - Indexing (Text Splitting)**"""
-
-
-"""# **Step 1c & 1d - Indexing (Embedding Generation and Storing in Vector Store)**"""
-
-
-"""# **Step2 - Retrival**"""
-
-
-"""# **Step 3 - Augmentation**"""
-
-
-"""# **Step 4 - Generation**"""
-
-
-"""# **Building a Chain**"""
-
-
 # -----------------------------------------
 # 3. Streamlit UI & State Management
 # -----------------------------------------
