@@ -43,8 +43,16 @@ def process_video(video_url):
         return None, "Invalid YouTube URL. Please check the link."
 
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
+        # 1. Instantiate the API client
+        ytt_api = YouTubeTranscriptApi()
+        
+        # 2. Fetch the object and convert to raw dictionary data
+        fetched_transcript = ytt_api.fetch(video_id, languages=['en'])
+        transcript_list = fetched_transcript.to_raw_data()
+        
+        # 3. Parse and flatten the text chunks
         transcript = " ".join([chunk["text"] for chunk in transcript_list])
+
     except TranscriptsDisabled:
         return None, "Transcripts are disabled for this video."
     except Exception as e:
