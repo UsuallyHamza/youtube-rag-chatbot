@@ -2,6 +2,7 @@
 
 import os
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled
+from youtube_transcript_api.proxies import GenericProxyConfig # the proxy config class
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -43,14 +44,25 @@ def process_video(video_url):
         return None, "Invalid YouTube URL. Please check the link."
 
     try:
-        # 1. Instantiate the API client
-        ytt_api = YouTubeTranscriptApi()
+        # 1. Securely load the proxy URL from the Streamlit Secrets
+        proxy_url = os.environ.get("PROXY_URL")
         
-        # 2. Fetch the object and convert to raw dictionary data
+        # 2. Build the proxy configuration if the URL exists
+        proxy_config = None
+        if proxy_url:
+            proxy_config = GenericProxyConfig(
+                http_url=proxy_url,
+                https_url=proxy_url
+            )
+
+        # 3. Instantiate the client with the proxy attached
+        ytt_api = YouTubeTranscriptApi(proxy_config=proxy_config)
+
+        # 4. Fetch the object and convert to raw dictionary data
         fetched_transcript = ytt_api.fetch(video_id, languages=['en'])
         transcript_list = fetched_transcript.to_raw_data()
         
-        # 3. Parse and flatten the text chunks
+        # 5. Parse and flatten the text chunks
         transcript = " ".join([chunk["text"] for chunk in transcript_list])
 
     except TranscriptsDisabled:
